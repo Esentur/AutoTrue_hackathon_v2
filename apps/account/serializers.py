@@ -1,4 +1,4 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
 from django.core.mail import send_mail
 
@@ -6,7 +6,7 @@ User = get_user_model()
 
 
 def send_active_mail(code, email, username):
-    full_link = f'http://localhost:8000/api/v1/account/active/{code}/'
+    full_link = f'http://localhost:8000/account/active/{code}/'
     send_mail(
         "Ваш активационный код",
         f"Здравствуйте {username.title()}.\n Пожалуйста перейдите по ссылке: {full_link} \n для активации вашего аккаунта.",
@@ -36,5 +36,25 @@ class RegistrationSerializer(serializers.ModelSerializer):
         send_active_mail(code, user.email, user.username)
         return user
 
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(required=True)
+
+    def validate(self, email):
+        if not User.objects.filter(email=email).exists():
+            raise serializers.ValidationError('Нет такого пользователя')
+        return email
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        password = attrs.get('password')
+
+        if email and password:
+            user = authenticate(username=email, password=password)
+            if not user:
+                raise serializers.ValidationError('Данные введены не корректно')
+            attrs['user'] = user
+            return attrs
 
 
