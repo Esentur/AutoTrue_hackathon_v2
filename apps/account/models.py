@@ -55,3 +55,4 @@ class MyUser(AbstractUser):
         code = str(uuid.uuid4())
         self.activation_code = code
 
+

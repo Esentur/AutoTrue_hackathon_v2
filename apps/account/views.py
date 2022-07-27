@@ -6,7 +6,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.account.serializers import RegistrationSerializer, LoginSerializer
+from apps.account.serializers import RegistrationSerializer, LoginSerializer, ResetPasswordSerilizer, \
+    CreateNewPasswordSerializer, ChangePasswordSerializer
 
 User = get_user_model()
 
@@ -36,6 +37,37 @@ class AccountActivationView(APIView):
 
 class LoginApiView(ObtainAuthToken):
     serializer_class = LoginSerializer
+
+
+class ResetPasswordView(APIView):
+    def post(self, request):
+        data = request.data
+        serializer = ResetPasswordSerilizer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.send_reset_password_link()
+        return Response('Вам отправлено письмо для восстановления пароля')
+
+
+class CreateNewPasswordView(APIView):
+    def post(self, request):
+        data = request.data
+        serializer = CreateNewPasswordSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.set_new_pass()
+        return Response('Пароль успешно восстановлен')
+
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializers = ChangePasswordSerializer(data=request.data,
+                                               context={'request': request})
+
+        serializers.is_valid(raise_exception=True)
+        serializers.set_new_password()
+        return Response('Вы успешно изменили свой пароль')
+
 
 
 class LogOutApiView(APIView):
