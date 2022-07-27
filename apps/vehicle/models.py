@@ -7,16 +7,18 @@ User = get_user_model()
 
 
 class Type(models.Model):
-    type_title = models.TextField(max_length=100)
+    type_title = models.TextField(verbose_name='Тип кузова', max_length=100)
     slug = models.SlugField(primary_key=True,
                             max_length=100,
                             unique=True,
-                            blank=True)
+                            blank=True,
+                            verbose_name='Кузов')
     type_parent = models.ForeignKey('self',
                                     on_delete=models.CASCADE,
                                     null=True,
                                     blank=True,
-                                    related_name='type_childen')
+                                    related_name='type_childen',
+                                    verbose_name='Родительская категория')
 
     def save(self, *args, **kwargs):
         self.slug = self.type_title.lower()
@@ -31,8 +33,6 @@ class Type(models.Model):
     class Meta:
         verbose_name = 'Тип транспорта'
         verbose_name_plural = 'Типы транспорта'
-
-
 
 
 class Vehicle(models.Model):
@@ -59,7 +59,8 @@ class Vehicle(models.Model):
     )
     seller = models.ForeignKey(User,
                                on_delete=models.CASCADE,
-                               related_name='vehicles')
+                               related_name='vehicles',
+                               verbose_name='Продавец')
     title = models.CharField(verbose_name='Наименование транспортного средства', max_length=50)
     price = models.DecimalField(verbose_name='Цена', max_digits=15, decimal_places=2)
     year = models.PositiveIntegerField(verbose_name='Год выпуска')
@@ -86,11 +87,11 @@ class Vehicle(models.Model):
 
 
 class Image(models.Model):
-    image = models.ImageField(verbose_name='изображение', upload_to='vehicles')
+    image = models.ImageField(verbose_name='Изображение', upload_to='vehicles')
     vehicle = models.ForeignKey(Vehicle,
                                 on_delete=models.CASCADE,
                                 related_name='images',
-                                verbose_name='транспорт')
+                                verbose_name='Транспорт', )
 
     def __str__(self):
         return self.vehicle
@@ -98,3 +99,25 @@ class Image(models.Model):
     class Meta:
         verbose_name = 'Изображение'
         verbose_name_plural = 'Изображения'
+
+
+class Review(models.Model):
+    author = models.ForeignKey(User,
+                               on_delete=models.CASCADE,
+                               related_name='reviews',
+                               verbose_name='Автор')
+    vehicle = models.ForeignKey(Vehicle,
+                                on_delete=models.CASCADE,
+                                related_name='reviews',
+                                verbose_name='Транспорт')
+    text = models.TextField(verbose_name='Текст', max_length=500)
+
+    created_at = models.DateTimeField(verbose_name='Создано', auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.author} {self.vehicle} {self.text}'
+
+    class Meta:
+        db_table = "review"
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'

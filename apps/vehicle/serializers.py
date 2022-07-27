@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.vehicle.models import Type, Vehicle, Image
+from apps.vehicle.models import Type, Vehicle, Image, Review
 
 
 class TypeSerializer(serializers.ModelSerializer):
@@ -38,3 +38,16 @@ class VehicleSerializer(serializers.ModelSerializer):
         for image in images.getlist('images'):
             Image.objects.create(vehicle=vehicle, image=image)
         return vehicle
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['reviews'] = ReviewSerializer(instance.reviews.all(), many=True).data
+        return representation
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    author = serializers.ReadOnlyField(source='author.username')
+
+    class Meta:
+        model = Review
+        fields = '__all__'
