@@ -33,6 +33,8 @@ class Type(models.Model):
         verbose_name_plural = 'Типы транспорта'
 
 
+
+
 class Vehicle(models.Model):
     FUEL_TYPE = (
         ('PETROL', 'бензин'),
