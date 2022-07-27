@@ -27,9 +27,11 @@ class Type(models.Model):
             return f'{self.type_parent} >> {self.slug}'
         else:
             return self.slug
+
     class Meta:
         verbose_name = 'Тип транспорта'
         verbose_name_plural = 'Типы транспорта'
+
 
 class Vehicle(models.Model):
     FUEL_TYPE = (
@@ -72,19 +74,25 @@ class Vehicle(models.Model):
     steering = models.CharField(verbose_name='Руль', max_length=20, choices=STEERING_TYPE)
 
     def __str__(self):
-        return  f'Модель: {self.title} '
+        return f'Модель: {self.title} '
+
     class Meta:
         ordering = ['title']
         db_table = 'vehicle'
         verbose_name = 'Транспортное средство'
         verbose_name_plural = 'Транстпортные средства'
 
+
 class Image(models.Model):
-    image = models.ImageField(verbose_name='изображение',upload_to='vehicles')
+    image = models.ImageField(verbose_name='изображение', upload_to='vehicles')
     vehicle = models.ForeignKey(Vehicle,
                                 on_delete=models.CASCADE,
                                 related_name='images',
                                 verbose_name='транспорт')
+
+    def __str__(self):
+        return self.vehicle
+
     class Meta:
         verbose_name = 'Изображение'
         verbose_name_plural = 'Изображения'

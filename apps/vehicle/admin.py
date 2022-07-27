@@ -15,16 +15,18 @@ class ImageAdmin(admin.ModelAdmin):
     search_fields = ['vehicle']
     list_filter = ['vehicle']
 
+
 class TypeAdmin(admin.ModelAdmin):
     search_fields = ['slug']
 
+
 class VehicleAdmin(admin.ModelAdmin):
     inlines = [ImangeInProduct]
-    list_display = ['title','seller', 'price']
+    list_display = ['title', 'seller', 'price']
     search_fields = ['title']
-    list_filter = ['title','year','price']
+    list_filter = ['title', 'year', 'price']
 
 
 admin.site.register(Vehicle, VehicleAdmin)
 admin.site.register(Image, ImageAdmin)
-admin.site.register(Type,TypeAdmin)
+admin.site.register(Type, TypeAdmin)
