@@ -42,6 +42,7 @@ class VehicleSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['reviews'] = ReviewSerializer(instance.reviews.all(), many=True).data
+        representation['likes']= instance.likes.filter(like=True).count()
         return representation
 
 

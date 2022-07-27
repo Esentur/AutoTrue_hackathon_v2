@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.vehicle.models import Vehicle, Image, Type, Review
+from apps.vehicle.models import Vehicle, Image, Type, Review, Like
 
 
 class ImageInProduct(admin.TabularInline):
@@ -41,3 +41,4 @@ admin.site.register(Vehicle, VehicleAdmin)
 admin.site.register(Image, ImageAdmin)
 admin.site.register(Type, TypeAdmin)
 admin.site.register(Review, ReviewAdmin)
+admin.site.register(Like)

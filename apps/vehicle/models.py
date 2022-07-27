@@ -121,3 +121,21 @@ class Review(models.Model):
         db_table = "review"
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
+
+
+class Like(models.Model):
+    author = models.ForeignKey(User,
+                               on_delete=models.CASCADE,
+                               verbose_name='Лайкнувший')
+    vehicle = models.ForeignKey(Vehicle,
+                                on_delete=models.CASCADE,
+                                verbose_name='Транстпорт')
+    like = models.BooleanField(verbose_name='Лайк', default=False)
+
+    def __str__(self):
+        return f'Автор лайка: {self.author} {self.vehicle}'
+
+    class Meta:
+        db_table = "like"
+        verbose_name = 'Лайк'
+        verbose_name_plural = 'Лайки'
