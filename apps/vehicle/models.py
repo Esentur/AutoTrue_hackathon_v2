@@ -94,7 +94,7 @@ class Image(models.Model):
                                 verbose_name='Транспорт', )
 
     def __str__(self):
-        return self.vehicle
+        return self.vehicle.title
 
     class Meta:
         verbose_name = 'Изображение'

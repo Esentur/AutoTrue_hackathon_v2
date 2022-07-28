@@ -1,6 +1,7 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils.safestring import mark_safe
 
 
 class UserManager(BaseUserManager):
@@ -40,7 +41,6 @@ class MyUser(AbstractUser):
     password = models.CharField(max_length=100)
     activation_code = models.CharField(max_length=50, blank=True)
     is_active = models.BooleanField(default=False)
-    avatar = models.ImageField(upload_to='users', default='/home/uran/Pictures/icon-256x256.png')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
