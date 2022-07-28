@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
 from django.core.mail import send_mail
 
+from apps.account.models import MyUser
 from apps.purchase.serializers import PurchaseSerializer
 
 User = get_user_model()
@@ -58,6 +59,20 @@ class LoginSerializer(serializers.Serializer):
                 raise serializers.ValidationError('Данные введены не корректно')
             attrs['user'] = user
             return attrs
+
+
+class MyUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MyUser
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        purchases=[]
+        for purchas in instance.purchases.all():
+            purchases.append(str(purchas))
+        representation['Заказы'] = purchases
+        return representation
 
 
 class ResetPasswordSerilizer(serializers.Serializer):

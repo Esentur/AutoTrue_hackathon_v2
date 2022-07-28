@@ -23,7 +23,7 @@ class Purchase(models.Model):
     created_at = models.DateTimeField(verbose_name='Дата заказа', auto_now_add=True)
 
     def __str__(self):
-        return f'{self.vehicle} - Покупатель: {self.buyer}'
+        return f'{self.vehicle}. Покупатель: {self.buyer}. Итговая стоимость: {self.cost}. Дата заказа: {self.created_at}'
 
     def save(self, *args, **kwargs):
         self.cost = self.vehicle.price
