@@ -26,14 +26,15 @@ class ReviewAdmin(admin.ModelAdmin):
     search_fields = ['text']
     list_filter = ['author']
 
+
 class TypeAdmin(admin.ModelAdmin):
     search_fields = ['slug']
 
 
 class VehicleAdmin(admin.ModelAdmin):
     inlines = [ImageInProduct, ReviewInAdmin]
-    list_display = ['title', 'seller', 'price']
-    search_fields = ['title']
+    list_display = ['id', 'title', 'seller', 'price']
+    search_fields = ['id','title']
     list_filter = ['title', 'year', 'price']
 
 
