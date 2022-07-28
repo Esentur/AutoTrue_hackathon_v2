@@ -43,7 +43,15 @@ class VehicleSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['reviews'] = ReviewSerializer(instance.reviews.all(), many=True).data
         representation['likes']= instance.likes.filter(like=True).count()
-        return representation
+
+        final_rating =0
+        for rating in instance.ratings.all():
+            final_rating+=int(rating.rating)
+        try:
+            representation['rating'] = final_rating / instance.ratings.all().count()
+            return representation
+        except ZeroDivisionError:
+            return representation
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -52,3 +60,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = '__all__'
+
+
+class RatingSerializer(serializers.Serializer):
+    rating = serializers.IntegerField(required=True, min_value=1, max_value=10)

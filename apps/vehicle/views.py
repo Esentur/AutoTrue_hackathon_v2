@@ -8,8 +8,8 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from apps.vehicle.models import Type, Vehicle, Review, Like
-from apps.vehicle.serializers import TypeSerializer, VehicleSerializer, ReviewSerializer
+from apps.vehicle.models import Type, Vehicle, Review, Like, Rating
+from apps.vehicle.serializers import TypeSerializer, VehicleSerializer, ReviewSerializer, RatingSerializer
 
 
 class LargeResultsSetPagination(PageNumberPagination):
@@ -51,6 +51,25 @@ class VehicleView(ModelViewSet):
         if like_obj.like:
             return Response('LIKED')
         return Response('UNLIKED')
+
+    @action (methods=['POST'], detail=True)
+    def rating(self,request,pk,*args,**kwargs):
+        serializer = RatingSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        obj, _ = Rating.objects.get_or_create(seller=request.user, vehicle_id=pk)
+        obj.rating = request.data['rating']
+        obj.save()
+        return Response(request.data)
+
+    def get_permissions(self):
+        # print(self.action)
+        if self.action in ['list', 'retrieve']:
+            permissions = []
+        elif self.action == 'like' or self.action=='rating':
+            permissions = [IsAuthenticated]
+        else:
+            permissions =[IsAuthenticated]
+        return [p() for p in permissions]
 
 
 

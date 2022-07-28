@@ -9,5 +9,7 @@ urlpatterns = [
     path('forgot_password/', ResetPasswordView.as_view()),
     path('create_new_password/', CreateNewPasswordView.as_view()),
     path('logout/', LogOutApiView.as_view()),
-    path('change_password/', ChangePasswordView.as_view())
+    path('change_password/', ChangePasswordView.as_view()),
+    path('<int:pk>/', MyUserDetailView.as_view())
+    # path('user_purchases/', UserPurchasesView.as_view({'get': 'list'}),
 ]

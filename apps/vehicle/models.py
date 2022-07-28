@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.db import models
-
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 User = get_user_model()
@@ -75,6 +74,7 @@ class Vehicle(models.Model):
     drive = models.CharField(verbose_name='Привод', max_length=20, choices=DRIVE_TYPE)
     transmission = models.CharField(verbose_name='КПП', max_length=20, choices=TRANSMISSION_TYPE)
     steering = models.CharField(verbose_name='Руль', max_length=20, choices=STEERING_TYPE)
+    is_available = models.BooleanField(verbose_name='Доступен для покупки',default=True)
 
     def __str__(self):
         return f'Модель: {self.title} '
@@ -126,10 +126,12 @@ class Review(models.Model):
 class Like(models.Model):
     author = models.ForeignKey(User,
                                on_delete=models.CASCADE,
+                               related_name='likes',
                                verbose_name='Лайкнувший')
     vehicle = models.ForeignKey(Vehicle,
                                 on_delete=models.CASCADE,
-                                verbose_name='Транстпорт')
+                                related_name='likes',
+                                verbose_name='Транспорт')
     like = models.BooleanField(verbose_name='Лайк', default=False)
 
     def __str__(self):
@@ -139,3 +141,21 @@ class Like(models.Model):
         db_table = "like"
         verbose_name = 'Лайк'
         verbose_name_plural = 'Лайки'
+
+
+class Rating(models.Model):
+    seller = models.ForeignKey(User,
+                               on_delete=models.CASCADE,
+                               related_name='ratings',
+                               verbose_name='Владелец рейтинга')
+    vehicle = models.ForeignKey(Vehicle,
+                                on_delete=models.CASCADE,
+                                related_name='ratings',
+                                verbose_name='Транспорт')
+
+    rating = models.SmallIntegerField(
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(10)
+        ], default=1
+    )
