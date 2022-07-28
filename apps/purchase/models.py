@@ -20,6 +20,8 @@ class Purchase(models.Model):
                                blank=True,
                                verbose_name='Итоговая стоимость')
 
+    created_at = models.DateTimeField(verbose_name='Дата заказа', auto_now_add=True)
+
     def __str__(self):
         return f'{self.vehicle} - Покупатель: {self.buyer}'
 

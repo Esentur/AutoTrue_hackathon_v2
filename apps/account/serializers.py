@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
 from django.core.mail import send_mail
 
+from apps.purchase.serializers import PurchaseSerializer
+
 User = get_user_model()
 
 
@@ -82,7 +84,6 @@ class ResetPasswordSerilizer(serializers.Serializer):
 
 
 class CreateNewPasswordSerializer(serializers.Serializer):
-
     email = serializers.EmailField(required=True)
     code = serializers.CharField(min_length=8, max_length=40, required=True)
     password = serializers.CharField(required=True)
@@ -138,3 +139,14 @@ class ChangePasswordSerializer(serializers.Serializer):
         password = self.validated_data.get('password')
         user.set_password(password)
         user.save()
+
+
+class PurchaseHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id','username']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['purchase_history'] = PurchaseSerializer(instance.purchases.all(), many=True).data
+        return representation
