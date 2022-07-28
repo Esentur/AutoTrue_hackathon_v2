@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from apps.vehicle.models import Type, Vehicle, Review, Like, Rating
+from apps.vehicle.models import Type, Vehicle, Review, Like, Rating, Favourite
 from apps.vehicle.serializers import TypeSerializer, VehicleSerializer, ReviewSerializer, RatingSerializer
 
 
@@ -40,6 +40,18 @@ class VehicleView(ModelViewSet):
         serializer.save(seller=self.request.user)
 
     @action(methods=['POST'], detail=True)
+    def favorite(self, request, pk, *args, **kwargs):
+        try:
+            fav_obj, _ = Favourite.objects.get_or_create(author=request.user, vehicle_id=pk)
+            fav_obj.favourite = not fav_obj.favourite
+            fav_obj.save()
+        except:
+            return ('The vehicle does not exits!')
+        if fav_obj.favourite:
+            return Response('Added to Favourites')
+        return Response('Removed from Favourites')
+
+    @action(methods=['POST'], detail=True)
     def like(self, request, pk, *args, **kwargs):
         try:
             like_obj, _ = Like.objects.get_or_create(author=request.user, vehicle_id=pk)
@@ -52,8 +64,8 @@ class VehicleView(ModelViewSet):
             return Response('LIKED')
         return Response('UNLIKED')
 
-    @action (methods=['POST'], detail=True)
-    def rating(self,request,pk,*args,**kwargs):
+    @action(methods=['POST'], detail=True)
+    def rating(self, request, pk, *args, **kwargs):
         serializer = RatingSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         obj, _ = Rating.objects.get_or_create(seller=request.user, vehicle_id=pk)
@@ -65,12 +77,11 @@ class VehicleView(ModelViewSet):
         # print(self.action)
         if self.action in ['list', 'retrieve']:
             permissions = []
-        elif self.action == 'like' or self.action=='rating':
+        elif self.action == 'like' or self.action == 'rating':
             permissions = [IsAuthenticated]
         else:
-            permissions =[IsAuthenticated]
+            permissions = [IsAuthenticated]
         return [p() for p in permissions]
-
 
 
 class ReviewView(ModelViewSet):

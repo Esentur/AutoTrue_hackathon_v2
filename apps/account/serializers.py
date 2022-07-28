@@ -69,9 +69,14 @@ class MyUserSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         purchases=[]
-        for purchas in instance.purchases.all():
-            purchases.append(str(purchas))
+        favourites = []
+        for purchase in instance.purchases.all():
+            purchases.append(str(purchase))
+        for favourite in instance.favourites.all():
+            print(instance.favourites.all())
+            favourites.append(str(favourite))
         representation['Заказы'] = purchases
+        representation['Избранные'] = favourites
         return representation
 
 

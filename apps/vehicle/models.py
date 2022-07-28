@@ -149,6 +149,26 @@ class Like(models.Model):
         verbose_name_plural = 'Лайки'
 
 
+class Favourite (models.Model):
+    author = models.ForeignKey(User,
+                                   on_delete=models.CASCADE,
+                                   related_name='favourites',
+                                   verbose_name='Избранные')
+    vehicle = models.ForeignKey(Vehicle,
+                                    on_delete=models.CASCADE,
+                                    related_name='favourites',
+                                    verbose_name='Избранные')
+    favourite = models.BooleanField(verbose_name='favourite', default=False)
+
+    def __str__(self):
+        return f'Пользователь: {self.author} Его(ее) избранное: {self.vehicle}'
+
+    class Meta:
+        db_table = "favourite"
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранные'
+
+
 class Rating(models.Model):
     seller = models.ForeignKey(User,
                                on_delete=models.CASCADE,
