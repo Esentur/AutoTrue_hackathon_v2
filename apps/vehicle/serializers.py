@@ -34,6 +34,8 @@ class VehicleSerializer(serializers.ModelSerializer):
         requests = self.context.get('request')
         images = requests.FILES
         vehicle = Vehicle.objects.create(**validated_data)
+        vehicle.generate_barcode()
+        vehicle.save()
         # при создании vehicle создаются и записи в таблице Images
         for image in images.getlist('images'):
             Image.objects.create(vehicle=vehicle, image=image)
@@ -52,6 +54,8 @@ class VehicleSerializer(serializers.ModelSerializer):
             return representation
         except ZeroDivisionError:
             return representation
+
+
 
 
 class ReviewSerializer(serializers.ModelSerializer):

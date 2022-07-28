@@ -74,7 +74,13 @@ class Vehicle(models.Model):
     drive = models.CharField(verbose_name='Привод', max_length=20, choices=DRIVE_TYPE)
     transmission = models.CharField(verbose_name='КПП', max_length=20, choices=TRANSMISSION_TYPE)
     steering = models.CharField(verbose_name='Руль', max_length=20, choices=STEERING_TYPE)
-    is_available = models.BooleanField(verbose_name='Доступен для покупки',default=True)
+    is_available = models.BooleanField(verbose_name='Доступен для покупки', default=True)
+    barcode = models.CharField(max_length=100, blank=True)
+
+    def generate_barcode(self):
+        import uuid
+        barcode = str(uuid.uuid4())
+        self.barcode = barcode
 
     def __str__(self):
         return f'Модель: {self.title} '
