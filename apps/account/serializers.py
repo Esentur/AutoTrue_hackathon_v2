@@ -70,7 +70,6 @@ class MyUserSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         purchases=[]
         for purchas in instance.purchases.all():
-            print(purchas)
             purchases.append(str(purchas))
         representation['Заказы'] = purchases
         return representation
