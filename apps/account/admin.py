@@ -1,16 +1,17 @@
 from django.contrib import admin
 
 from apps.account.models import MyUser
+from apps.purchase.models import Purchase
 
+
+class PurchaseInAdmin(admin.TabularInline):
+    model = Purchase
+    fields = ['buyer']
 
 class MyUserAdmin(admin.ModelAdmin):
-    list_display = ['username', 'email', 'image_tag']
-    readonly_fields = ['image_tag']
-    def image_tag(self, obj):
-        return f'<img src={obj.avatar.url}'
+    inlines = [PurchaseInAdmin]
+    list_display = ['username', 'email']
 
-    image_tag.short_description = 'avatar'
-    image_tag.allow_tags = True
 
 
 admin.site.register(MyUser, MyUserAdmin)

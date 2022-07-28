@@ -40,7 +40,6 @@ class MyUser(AbstractUser):
     password = models.CharField(max_length=100)
     activation_code = models.CharField(max_length=50, blank=True)
     is_active = models.BooleanField(default=False)
-    avatar = models.ImageField(upload_to='users', default='/home/uran/Pictures/icon-256x256.png')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
@@ -54,5 +53,3 @@ class MyUser(AbstractUser):
         import uuid
         code = str(uuid.uuid4())
         self.activation_code = code
-
-
