@@ -22,6 +22,8 @@ class Purchase(models.Model):
 
     created_at = models.DateTimeField(verbose_name='Дата заказа', auto_now_add=True)
 
+    is_confirmed = models.BooleanField(verbose_name='Подтвержден ли', default=False)
+
     def __str__(self):
         return f'{self.vehicle}. Покупатель: {self.buyer}. Итговая стоимость: {self.cost}. Дата заказа: {self.created_at}'
 

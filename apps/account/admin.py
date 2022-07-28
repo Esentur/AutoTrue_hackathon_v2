@@ -11,6 +11,7 @@ class PurchaseInAdmin(admin.TabularInline):
 class MyUserAdmin(admin.ModelAdmin):
     inlines = [PurchaseInAdmin]
     list_display = ['username', 'email']
+    search_fields = ['username','email']
 
 
 admin.site.register(MyUser, MyUserAdmin)
